@@ -20,19 +20,22 @@
     data () {
       return {
         plants: {},
-        name: ''
+        name: '',
+        uid: ''
       }
     },
     async mounted () {
-      firebase.database().ref('/plants/').on('value', (snapshot) => {
+      this.uid = firebase.auth().currentUser.uid
+      console.log(this.uid)
+      firebase.database().ref('/plants/' + this.uid).on('value', (snapshot) => {
         this.plants = snapshot.val()
       })
     },
     methods: {
       addPlant () {
-        firebase.database().ref('plants').push({
-          name: this.name,
-          uid: firebase.auth().currentUser.uid
+        // o3y40gbJ2lSJte6MnZCQM5nHICB3
+        firebase.database().ref('plants/' + this.uid).push({
+          name: this.name
         })
       }
     }

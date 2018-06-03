@@ -36,8 +36,8 @@
           <v-text-field v-model="password" type="password" label="Password" :disabled="!device"/>
 
           <div class="text-xs-center mt-4">
-            <v-btn color="primary" @click="saveWifiSettings" large :disabled="saving">
-              Save wifi settings to plant
+            <v-btn color="primary" @click="page = 3" large :disabled="saving">
+              Save network settings
               <v-icon right>wifi</v-icon>
             </v-btn>
           </div>
@@ -48,9 +48,9 @@
           </div>
           <v-text-field label="Plant name" v-model="name"></v-text-field>
           <div class="text-xs-center mt-4">
-            <v-btn color="primary" @click="saveWifiSettings" large :disabled="saving">
-              Done
-              <v-icon right>done_all</v-icon>
+            <v-btn color="primary" @click="saveSettings" large :disabled="saving">
+              Save and finish
+              <v-icon right>done</v-icon>
             </v-btn>
           </div>
         </v-stepper-content>
@@ -61,15 +61,16 @@
 </template>
 
 <script>
-  import {str2ab, ab2str} from '@/imports/buffers'
+  import {str2ab} from '@/imports/buffers'
+  import firebase from 'firebase'
   // import sleep from 'sleep-promise'
 
   export default {
     data () {
       return {
         sensorValue: '',
-        ssid: 'testssid',
-        password: 'passwordpls',
+        ssid: 'kanel28trick65rabat',
+        password: 'f495bcabd22133098862e7f760',
         device: null,
         sendCharacteristic: null,
         pairing: false,
@@ -88,25 +89,24 @@
         this.pairing = true
         let server = await device.gatt.connect()
         let service = await server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e')
-        let characteristic = await service.getCharacteristic('6e400003-b5a3-f393-e0a9-e50e24dcca9e')
-        let char = await characteristic.startNotifications()
-        char.addEventListener('characteristicvaluechanged', this.handleChange)
         this.sendCharacteristic = await service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e')
         this.device = device
         this.pairing = false
         this.page = 2
       },
-      async saveWifiSettings () {
+      async saveSettings () {
         this.saving = true
+
+        let ref = await firebase.database().ref('plants/' + firebase.auth().currentUser.uid).push({
+          name: this.name
+        })
+
         await this.sendCharacteristic.writeValue(str2ab('ssid' + this.ssid))
         await this.sendCharacteristic.writeValue(str2ab('pass' + this.password))
-      },
-      handleChange (event) {
-        let message = ab2str(event.target.value.buffer)
-        if (message === 'ssav') {
-          this.saving = false
-          this.page = 3
-        }
+        await this.sendCharacteristic.writeValue(str2ab('usid' + firebase.auth().currentUser.uid))
+        await this.sendCharacteristic.writeValue(str2ab('plid' + ref.key))
+        await this.sendCharacteristic.writeValue(str2ab('ssav'))
+        this.saving = false
       }
     }
   }
