@@ -107,12 +107,13 @@
         await this.sendCharacteristic.writeValue(str2ab('plid' + ref.key))
         await this.sendCharacteristic.writeValue(str2ab('ssav'))
         this.saving = false
+        this.$router.push({name: 'Index'})
       }
     }
   }
 </script>
 
-<style>
+<style scoped>
   .container {
     max-width: 600px;
   }

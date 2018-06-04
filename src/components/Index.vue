@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <v-text-field label="Name" v-model="name"></v-text-field>
-    <v-btn @click="addPlant">Add plant</v-btn>
-
+  <div class="container">
+    <div class="display-1 pa-3">
+      Plants
+    </div>
     <v-container grid-list-md>
       <v-layout row wrap>
         <v-flex xs4 v-for="plant in plants">
-          {{plant.name}}
+          <Plant :plant="plant"></Plant>
         </v-flex>
       </v-layout>
     </v-container>
@@ -15,12 +15,15 @@
 
 <script>
   import firebase from 'firebase'
+  import Plant from '@/components/Plant'
 
   export default {
+    components: {
+      Plant
+    },
     data () {
       return {
         plants: {},
-        name: '',
         uid: ''
       }
     },
@@ -30,14 +33,6 @@
       firebase.database().ref('/plants/' + this.uid).on('value', (snapshot) => {
         this.plants = snapshot.val()
       })
-    },
-    methods: {
-      addPlant () {
-        // o3y40gbJ2lSJte6MnZCQM5nHICB3
-        firebase.database().ref('plants/' + this.uid).push({
-          name: this.name
-        })
-      }
     }
   }
 </script>
