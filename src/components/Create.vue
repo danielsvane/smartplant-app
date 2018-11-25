@@ -69,8 +69,8 @@
     data () {
       return {
         sensorValue: '',
-        ssid: 'kanel28trick65rabat',
-        password: 'f495bcabd22133098862e7f760',
+        ssid: 'koben65patos47smuds',
+        password: 'b20e19b9cbac5ca90a2a0b6df3',
         device: null,
         sendCharacteristic: null,
         pairing: false,
@@ -82,8 +82,8 @@
     methods: {
       async getDevices () {
         let device = await navigator.bluetooth.requestDevice({
-          acceptAllDevices: true,
-          // filters: [ {services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']} ],
+          // acceptAllDevices: true,
+          filters: [ {name: 'Smartplant'} ],
           optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e', '6e400002-b5a3-f393-e0a9-e50e24dcca9e', '6e400003-b5a3-f393-e0a9-e50e24dcca9e']
         })
         this.pairing = true

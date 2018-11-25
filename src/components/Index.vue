@@ -5,8 +5,8 @@
     </div>
     <v-container grid-list-md>
       <v-layout row wrap>
-        <v-flex xs4 v-for="plant in plants">
-          <Plant :plant="plant"></Plant>
+        <v-flex xs4 v-for="plant, key in plants" :key="key">
+          <Plant :plant="plant" :id="key" :uid="uid"></Plant>
         </v-flex>
       </v-layout>
     </v-container>
